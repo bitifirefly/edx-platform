@@ -9,7 +9,6 @@ from student.tests.factories import UserFactory, CourseEnrollmentFactory, AdminF
 from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
 from capa.tests.response_xml_factory import StringResponseXMLFactory
 from courseware.tests.factories import StudentModuleFactory
-from xmodule.modulestore.django import modulestore
 
 
 USER_COUNT = 11
@@ -80,9 +79,6 @@ class TestGradebook(SharedModuleStoreTestCase):
             args=(self.course.id.to_deprecated_string(),)
         ))
 
-    def test_response_code(self):
-        self.assertEquals(self.response.status_code, 200)
-
 
 @attr('shard_1')
 class TestDefaultGradingPolicy(TestGradebook):
@@ -90,6 +86,10 @@ class TestDefaultGradingPolicy(TestGradebook):
     Tests that the grading policy is properly applied for all users in the course
     Uses the default policy (50% passing rate)
     """
+    def test_response_code(self):
+        # Tests the response code from the setUp method
+        self.assertEquals(self.response.status_code, 200)
+
     def test_all_users_listed(self):
         for user in self.users:
             self.assertIn(user.username, unicode(self.response.content, 'utf-8'))
